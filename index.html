@@ -13,6 +13,7 @@
 
 
     <h1>Jeopardy!</h1>
+    <h2 id='score'>Your Score: $0</h2>
 
     <div id='grid'>
         <!-- <div class="grid-item">
@@ -22,10 +23,17 @@
         </div> -->
     </div>
 
-    <div class="question">This is an example question</div>
+    <div id="question">This is an example question</div>
 
-    
+    <form action="submit" id="answerform">
+        <label for="answer">Your Answer:</label>
+        <input type="text" id='answer' name='answer'>
+        <input type="submit" value="Submit" class="submit-btn">
+    </form>
 
+    <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="main.js"></script>
-</body </html>
+</body>
+
+</html>

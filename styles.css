@@ -7,10 +7,12 @@ body {
     display: grid;
     width: 80vw;
     height: 40vh;
-    grid-template-rows: repeat(5, 1fr);
+    grid-template-rows: repeat(6, 1fr);
     grid-template-columns: repeat(5, 1fr);
 
 }
+
+
 
 .grid-item {
 
@@ -21,15 +23,22 @@ body {
     background-color: rgb(206, 187, 226);
     border: 1px black solid;
 
+}
 
+.grid-category {
+
+    display: grid;
+    justify-items: center;
+    align-items: center;
+
+    background-color: rgb(146, 56, 241);
+    border: 1px black solid;
 
 }
 
-.grid-item:hover {
+.grid-question:hover {
 
     background-color: red;
-
-
 
 }
 
@@ -42,3 +51,8 @@ body {
 
 
 }
+
+
+/* .submit-btn {
+    pointer-events: none;
+} */
