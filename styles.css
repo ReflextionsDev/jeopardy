@@ -1,7 +1,10 @@
 body {
     text-align: center;
     margin: 0 10vw;
+    color: #001219ff;
 }
+
+/* GRID */
 
 #grid {
     display: grid;
@@ -10,49 +13,93 @@ body {
     grid-template-rows: repeat(6, 1fr);
     grid-template-columns: repeat(5, 1fr);
 
+    box-shadow: 3px 3px 10px;
+    margin-bottom: 30px;
 }
 
-
-
 .grid-item {
-
     display: grid;
     justify-items: center;
     align-items: center;
 
-    background-color: rgb(206, 187, 226);
+    background-color: #0a9396ff;
     border: 1px black solid;
+}
 
+.grid-disabled {
+    pointer-events: none;
+    /* background-color: rgb(199, 111, 111); */
+}
+
+.grid-active {
+    display: grid;
+    justify-items: center;
+    align-items: center;
+
+    background-color: rgb(63, 159, 197);
+    border: 1px black solid;
+}
+
+.grid-answered {
+    pointer-events: none;
+    background-color: #005f73ff;
 }
 
 .grid-category {
-
     display: grid;
     justify-items: center;
     align-items: center;
 
-    background-color: rgb(146, 56, 241);
+    background-color: #ee9b00ff;
     border: 1px black solid;
+    pointer-events: none;
 
+    font-weight: bold;
 }
 
 .grid-question:hover {
-
-    background-color: red;
-
+    background-color: #94d2bdff;
+    cursor: pointer;
 }
+
+/* .grid-active:hover {
+    background-color: rgb(70, 34, 34);
+} */
 
 .grid-content {
-
-    border: 10px;
-    background-color: rgb(226, 215, 238);
-
-    width: 100%;
-
-
+    margin: 10px;
 }
 
+/* User Input */
 
-/* .submit-btn {
+#question {
+    font-size: larger;
+}
+
+.input {
+    font-size: larger;
+}
+
+.submit-btn {
+    /* pointer-events: none; */
+}
+
+.btn-enabled {
+    cursor: pointer;
+    /* background-color: green; */
+}
+
+.btn-disabled {
     pointer-events: none;
-} */
+    background-color: rgb(125, 115, 115);
+}
+
+.input-enabled {
+    cursor: pointer;
+    /* background-color: green; */
+}
+
+.input-disabled {
+    pointer-events: none;
+    background-color: rgb(125, 115, 115);
+}

@@ -1,79 +1,71 @@
-// --- Initialization ---
+// --- Load Local Storage ---
 
-// --- Load Data ---
+let score = localStorage.getItem('score')
+score = (score === null) ? 0 : Number(score)
 
-// deprecteed
-let questionSet = []
-loadData()
 
-let questions = {}
+// --- Variables ---
 
-// temp
-
+// Game Vars
+const cheats = true
+const gridWidth = 5, gridHeight = 6
+const prizes = [200, 400, 600, 800, 1000]
 
 let categories = []
+let questions = {}
 
-const gridWidth = 5, gridHeight = 6
+let gridItems = []
+let activeItem = {}
 
-async function loadData() {
+// Doc Elements
+const scoreTXT = $('#score')[0]
+const grid = $('#grid')
+const form = $('#answerform')
+const questionTXT = $('#question')[0]
+const submit_btn = $('.submit-btn')
+const submit_text = $('.submit-text')
+
+
+// --- Initialization ---
+loadGame()
+
+// --- Load Game ---
+async function loadGame() {
 
     // Get the jeopardy data from the JSON file
     const rawJeopardyData = await fetch('jeopardy.json')
     const jeopardyData = await rawJeopardyData.json()
 
-    // Group the data by show
+    // Get a random show, fiter into round, then categories
     const showData = _.groupBy(jeopardyData, 'showNumber')
-
-    // Load a random show, filter into round, then categories
-    const randomShow = questionSet = _.sample(showData)
+    const randomShow = _.sample(showData)
     let dataByRound = _.groupBy(randomShow, 'round')["Jeopardy!"]
     let dataByCategory = _.groupBy(dataByRound, 'category')
 
-
     // Debug Stuff
-    console.log("DATA BY CAT:")
-    console.log(dataByCategory)
+    // console.log("DATA BY CAT:")
+    // console.log(dataByCategory)
 
     // Save question set and set categories
     questions = dataByCategory
     for (let i = 0; i < 5; i++) {
         categories.push(Object.keys(dataByCategory)[i])
     }
- 
 
+    updateScore()
     buildGrid(gridHeight, gridWidth)
-};
+}
 
 // --- Build Grid ---
-
-const grid = $('#grid')
-const prizes = [200, 400, 600, 800, 1000]
-
-
-
 function buildGrid(rows, columns) {
 
     for (let i = 0; i < rows; i++) {
 
         for (let j = 0; j < columns; j++) {
 
-
-            let itemText = "Null"
-
-            if (i === 0) {
-                itemText = categories[j]
-            } else {
-                itemText = "$" + prizes[i - 1]
-            }
-            // each item needs: an ID of some kind
-
-            let gridClass = 'grid-item'
-
-            if (i === 0) {
-                gridClass = 'grid-item grid-category'
-            } else {
-                gridClass = `grid-item grid-question`
-            }
+            const isCategory = !i
+            const itemText = isCategory ? categories[j] : "$" + prizes[i - 1];
+            const gridClass = 'grid-item ' + (isCategory ? 'grid-category' : `grid-question`);
 
             const grid_item = $(`
             <div class="${gridClass} item-${i} category-${j + 1}">
@@ -83,74 +75,94 @@ function buildGrid(rows, columns) {
             </div>
             `)
 
-
-
             grid.append(grid_item)
-
 
             if (i !== 0) {
                 grid_item.on('click', () => {
 
-                    let category = _.split(grid_item[0].classList[3], '-')[1]
-                    let question = _.split(grid_item[0].classList[2], '-')[1]
+                    let category = _.split(grid_item[0].classList[3], '-')[1] - 1
+                    let question = _.split(grid_item[0].classList[2], '-')[1] - 1
 
-                    console.log("Category:", category, "Question:", question)
+                    // console.log("Category:", category, "Question:", question)
+
+                    activeItem = grid_item
+                    grid_item[0].classList.add("grid-active")
+                    disableGrid()
+
+                    getQuestion(category, question)
 
                 })
             }
+
+            gridItems = $(`.grid-item`)
         }
     }
 }
 
-
-// --- Get Question ---
-
-
-const questionTXT = $('#question')[0]
-
-// 1,2,4,6,8
-
-let activeQuestion = 0
-let expectedAnswer = ''
-
-// get jeopardy question based on num argument from array
-function getQuestion(num) {
-
-    activeQuestion = num
-
-    let q = questionSet[num]
-
-    console.log(q)
-
-    questionTXT.innerText = q.question
-
-    expectedAnswer = _.toLower(q.answer)
-
+// --- Utility Functions ---
+function disableGrid() {
+    gridItems.addClass('grid-disabled')
+    toggleSubmit()
 }
 
+function enableGrid() {
+    gridItems.removeClass('grid-disabled')
+    toggleSubmit()
+}
 
+function toggleSubmit() {
+    submit_btn.toggleClass('btn-enabled')
+    submit_btn.toggleClass('btn-disabled')
 
+    submit_text.toggleClass('input-enabled')
+    submit_text.toggleClass('input-disabled')
+}
 
-// --- User Input ---
+function updateScore() {
+    scoreTXT.innerText = `Your Score: $${score}`
+    localStorage.setItem('score', score);
+}
 
-const scoreTXT = $('#score')[0]
-const form = $('#answerform')
+// --- Get Question ---
+let activeQuestion = {}
+let expectedAnswer = ""
+let activePrize = 0
 
-form.on('submit', (input) => {
-    input.preventDefault()
-    let answer = _.toLower(input.target[0].value)
+function getQuestion(category, question) {
 
-    if (_.isEqual(answer, expectedAnswer)) {
-        console.log("Correct")
-    } else {
-        console.log("Incorrect")
+    thisCategory = categories[category]
+    thisQuestion = questions[thisCategory][question]
+    activeQuestion = thisQuestion
+    activePrize = (question + 1) * 200
+
+    if (cheats === true) {
+        console.log("Answer:", thisQuestion.answer)
     }
 
-    console.log(answer)
+    questionTXT.innerText = thisQuestion.question
+    expectedAnswer = _.toLower(thisQuestion.answer)
+}
 
-
+// --- User Input ---
+form.on('submit', (input) => {
+    input.preventDefault()
+    if (submit_btn.hasClass("btn-enabled")) {
+        let answer = _.toLower(input.target[0].value)
+        _.isEqual(answer, expectedAnswer) ? answerQuestion('correct') : answerQuestion('incorrect');
+    }
 })
 
-function checkAnswer() {
+function answerQuestion(type) {
+    if (type === 'correct') {
+        score += activePrize
+        questionTXT.innerText = "Correct!"
+    } else {
+        questionTXT.innerText = "Incorrect."
+    }
 
+    activeItem[0].classList.add("grid-answered")
+    submit_text[0].value = ""
+
+    updateScore()
+    enableGrid()
 }

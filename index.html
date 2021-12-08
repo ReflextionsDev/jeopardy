@@ -10,9 +10,7 @@
 </head>
 
 <body>
-
-
-    <h1>Jeopardy!</h1>
+    <h1>JEOPARDY!</h1>
     <h2 id='score'>Your Score: $0</h2>
 
     <div id='grid'>
@@ -23,12 +21,12 @@
         </div> -->
     </div>
 
-    <div id="question">This is an example question</div>
-
+    <div id="question">Select a question</div>
+    <br>
     <form action="submit" id="answerform">
         <label for="answer">Your Answer:</label>
-        <input type="text" id='answer' name='answer'>
-        <input type="submit" value="Submit" class="submit-btn">
+        <input type="text" id='answer' name='answer' class="submit-text input-disabled">
+        <input type="submit" value="Submit" class="submit-btn btn-disabled">
     </form>
 
     <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
