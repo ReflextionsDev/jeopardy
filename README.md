@@ -4,5 +4,7 @@ This web application is an interactive Jeopardy board! Players are asked a quest
 
 The board is styled with CSS grid and uses jQuery to dynamically populate random data from a json file. A new game is loaded every time the page is refreshed, but player score is accumulative and stored in local storage. 
 
+https://reflextionsdev.github.io/jeopardy/
+
 ## Images
 ![preview image](./preview.png)
